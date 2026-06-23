@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Request Prompt • ShiroNekoAI Art</title>
+    <link rel="icon" href="https://ar-hosting.pages.dev/1781948213401.jpg" type="image/jpeg">
+    <meta name="description" content="Request Prompt AI - Kirim permintaan prompt AI dengan mudah.">
+    <meta name="theme-color" content="#6C3CE1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <img src="https://ar-hosting.pages.dev/1781948213401.jpg" alt="Logo" class="logo-icon">
+                <div class="header-title">
+                    <h1>Request Prompt</h1>
+                    <span class="subtitle">ShiroNekoAI Art</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Card -->
+        <div class="card">
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">🖼️</div>
+                <p>Upload gambar referensi</p>
+                <p class="small">Klik untuk memilih file</p>
+                <input type="file" id="fileInput" accept="image/*" capture="environment">
+            </div>
+
+            <div id="previewContainer" class="preview-container">
+                <div class="preview-placeholder">
+                    <span>📸</span>
+                    <p>Belum ada gambar</p>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="form-group">
+                <label>📝 Nama <span class="required">*</span></label>
+                <input type="text" id="namaInput" placeholder="Masukkan nama Anda" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label>📱 Nomor WhatsApp <span class="required">*</span></label>
+                <input type="text" id="waInput" placeholder="Contoh: 08123456789" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label>✈️ Username Telegram (Opsional)</label>
+                <input type="text" id="teleInput" placeholder="@username atau kosongkan" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label>📝 Alasan (Opsional)</label>
+                <textarea id="alasanInput" placeholder="Tulis alasan request Anda..." class="form-textarea" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>🎭 Pilih Genre <span class="required">*</span></label>
+                <div class="genre-group">
+                    <button class="genre-btn" data-genre="SFW">🟢 SFW</button>
+                    <button class="genre-btn" data-genre="NSFW">🔴 NSFW</button>
+                </div>
+                <input type="hidden" id="genreInput" value="">
+            </div>
+
+            <div class="button-group">
+                <button id="submitBtn" class="btn btn-primary" disabled>
+                    <span id="submitText">📤 Kirim Request</span>
+                    <div id="loadingSpinner" class="spinner hidden"></div>
+                </button>
+                <button id="clearAllBtn" class="btn btn-danger">🧹 Clear All</button>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <!-- Info -->
+            <div class="info-box">
+                <div class="info-item">
+                    <span>🆔 ID Request:</span>
+                    <span id="requestId">-</span>
+                </div>
+                <div class="info-item">
+                    <span>📎 Gambar:</span>
+                    <span id="imageStatus">Belum ada</span>
+                </div>
+                <div class="info-item">
+                    <span>⏳ Status:</span>
+                    <span id="requestStatus">Menunggu</span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© Request Prompt | Copyright ShiroNeko 2026</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

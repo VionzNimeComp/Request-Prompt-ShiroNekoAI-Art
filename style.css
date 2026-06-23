@@ -1,0 +1,419 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    background: url('https://ar-hosting.pages.dev/1781162037972.jpg') no-repeat center center fixed;
+    background-size: cover;
+    padding: 16px;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+}
+
+.container {
+    max-width: 560px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-title h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.header-title .subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.upload-area {
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.upload-area:hover {
+    border-color: rgba(108, 60, 225, 0.4);
+    background: rgba(108, 60, 225, 0.05);
+}
+
+.upload-area.dragover {
+    border-color: #6C3CE1;
+    background: rgba(108, 60, 225, 0.08);
+}
+
+.upload-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.upload-area p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+.upload-area .small {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+#fileInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.preview-container {
+    margin: 12px 0;
+    min-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-placeholder {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.preview-placeholder span {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.preview-placeholder p {
+    font-size: 12px;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    object-fit: contain;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.form-group {
+    margin: 14px 0;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.form-group .required {
+    color: #ff6b6b;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-input:focus {
+    border-color: #6C3CE1;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-textarea:focus {
+    border-color: #6C3CE1;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.genre-group {
+    display: flex;
+    gap: 10px;
+}
+
+.genre-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.genre-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.genre-btn.active-sfw {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+}
+
+.genre-btn.active-nsfw {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #fff;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6C3CE1, #8B4FD8);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(108, 60, 225, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-danger {
+    background: rgba(231, 76, 60, 0.5);
+    border: 1px solid rgba(231, 76, 60, 0.15);
+}
+
+.btn-danger:hover {
+    background: rgba(231, 76, 60, 0.7);
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2.5px solid rgba(255, 255, 255, 0.2);
+    border-top: 2.5px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.status-message {
+    margin: 10px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.status-message.success {
+    display: block;
+    background: rgba(46, 204, 113, 0.15);
+    color: #5deaa0;
+    border: 1px solid rgba(46, 204, 113, 0.1);
+}
+
+.status-message.error {
+    display: block;
+    background: rgba(231, 76, 60, 0.15);
+    color: #f57a6e;
+    border: 1px solid rgba(231, 76, 60, 0.1);
+}
+
+.status-message.loading {
+    display: block;
+    background: rgba(52, 152, 219, 0.15);
+    color: #5dade2;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.status-message.info {
+    display: block;
+    background: rgba(241, 196, 15, 0.12);
+    color: #f4d03f;
+    border: 1px solid rgba(241, 196, 15, 0.08);
+}
+
+.info-box {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 14px;
+}
+
+.info-item {
+    display: flex;
+    gap: 5px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.info-item span:first-child {
+    color: rgba(255, 255, 255, 0.35);
+    min-width: 50px;
+}
+
+.info-item span:last-child {
+    color: rgba(255, 255, 255, 0.75);
+    word-break: break-all;
+}
+
+.footer {
+    text-align: center;
+    padding: 14px;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 11px;
+    margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 16px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .info-box {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    
+    .genre-group {
+        flex-direction: column;
+    }
+    
+    .upload-area {
+        padding: 20px 12px;
+    }
+}
