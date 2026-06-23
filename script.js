@@ -1,5 +1,16 @@
 // ============================================
-// REQUEST PROMPT - MAIN APPLICATION
+// KONFIGURASI TELEGRAM - LANGSUNG DI SINI
+// ============================================
+
+const TELEGRAM_CONFIG = {
+    botToken: '8727885486:AAE1cjgW03D49rWTqNDM0kWgR1ZI0JhRYmM',
+    chatId: '-1003700985529',
+    ownerId: '2056834184', // GANTI DENGAN ID TELEGRAM ANDA
+    apiUrl: 'https://api.telegram.org/bot'
+};
+
+// ============================================
+// MAIN APPLICATION
 // ============================================
 
 class RequestPromptApp {
@@ -14,8 +25,6 @@ class RequestPromptApp {
         this.lastSubmitTime = parseInt(localStorage.getItem('lastRequestTime')) || 0;
         this.selectedGenre = '';
         this.errorCount = 0;
-        
-        // ✅ URL API (otomatis detect)
         this.baseUrl = window.location.origin;
         this.apiUrl = this.baseUrl;
         
@@ -36,28 +45,23 @@ class RequestPromptApp {
         this.requestIdEl = document.getElementById('requestId');
         this.imageStatusEl = document.getElementById('imageStatus');
         this.requestStatusEl = document.getElementById('requestStatus');
-        this.galleryBtn = document.getElementById('galleryBtn');
-        this.cameraBtn = document.getElementById('cameraBtn');
-        this.cameraInput = document.getElementById('cameraInput');
         
         this.genreBtns = document.querySelectorAll('.genre-btn');
+        
+        // Cek apakah elemen ada
+        if (!this.uploadArea || !this.fileInput) {
+            alert('Error: Elemen HTML tidak ditemukan!');
+            return;
+        }
         
         this.init();
     }
     
     init() {
-        if (typeof TELEGRAM_CONFIG === 'undefined') {
-            this.showStatus('❌ File config.js tidak ditemukan!', 'error');
-            return;
-        }
-        
-        if (!validateConfig()) {
-            this.showStatus('⚠️ Silakan isi Token Bot, Chat ID, dan Owner ID di config.js', 'error');
-            this.submitBtn.disabled = true;
-            return;
-        }
-        
+        console.log('✅ App starting...');
         console.log('📡 API URL:', this.apiUrl);
+        console.log('📡 Bot Token:', TELEGRAM_CONFIG.botToken ? '✅ ADA' : '❌ TIDAK ADA');
+        console.log('📡 Chat ID:', TELEGRAM_CONFIG.chatId ? '✅ ADA' : '❌ TIDAK ADA');
         
         // Event Listeners
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
@@ -73,28 +77,12 @@ class RequestPromptApp {
         });
         
         this.submitBtn.addEventListener('click', this.handleSubmit.bind(this));
-        this.clearAllBtn.addEventListener('click', this.clearAll.bind(this))
+        this.clearAllBtn.addEventListener('click', this.clearAll.bind(this));
         
         this.requestIdEl.textContent = this.requestId;
         this.checkCooldownOnLoad();
-
-        this.galleryBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-        this.fileInput.click();
-        });
-
-        this.cameraBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-        this.cameraInput.click();
-        });
-
-        this.cameraInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            if (files.length > 0) {
-        this.processFile(files[0]);
-        }
-        this.cameraInput.value = '';
-        });
+        
+        console.log('✅ App ready!');
     }
     
     // ===== FILE HANDLING =====
@@ -128,16 +116,12 @@ class RequestPromptApp {
     processFile(file) {
         try {
             if (!file.type.startsWith('image/')) {
-                const errorMsg = `File "${file.name}" bukan gambar!`;
-                this.showStatus(`❌ ${errorMsg}`, 'error');
-                this.sendErrorLog('File Validation Error', errorMsg, { fileName: file.name, fileType: file.type });
+                this.showStatus('❌ File harus berupa gambar!', 'error');
                 return;
             }
             
             if (file.size > 20 * 1024 * 1024) {
-                const errorMsg = `File "${file.name}" terlalu besar (${(file.size/1024/1024).toFixed(2)}MB), maks 20MB!`;
-                this.showStatus(`❌ ${errorMsg}`, 'error');
-                this.sendErrorLog('File Size Error', errorMsg, { fileName: file.name, fileSize: file.size });
+                this.showStatus(`❌ File terlalu besar (${(file.size/1024/1024).toFixed(2)}MB), maks 20MB!`, 'error');
                 return;
             }
             
@@ -160,11 +144,6 @@ class RequestPromptApp {
                     <img src="${e.target.result}" alt="${this.imageName}" class="preview-image">
                 `;
             };
-            reader.onerror = (e) => {
-                const errorMsg = 'Gagal membaca file untuk preview';
-                this.showStatus(`❌ ${errorMsg}`, 'error');
-                this.sendErrorLog('File Read Error', errorMsg, { fileName: file.name });
-            };
             reader.readAsDataURL(file);
             
             this.imageStatusEl.textContent = file.name;
@@ -172,9 +151,8 @@ class RequestPromptApp {
             this.showStatus(`✅ Gambar "${file.name}" siap dikirim!`, 'success');
             
         } catch (error) {
-            const errorMsg = `Error processing file: ${error.message}`;
-            this.showStatus(`❌ ${errorMsg}`, 'error');
-            this.sendErrorLog('Process File Error', errorMsg, { fileName: file?.name, errorStack: error.stack });
+            console.error('Process file error:', error);
+            this.showStatus(`❌ Error: ${error.message}`, 'error');
         }
     }
     
@@ -184,9 +162,7 @@ class RequestPromptApp {
             const btn = e.target;
             const genre = btn.dataset.genre;
             
-            if (!genre) {
-                throw new Error('Genre data tidak ditemukan');
-            }
+            if (!genre) return;
             
             this.genreBtns.forEach(b => {
                 b.classList.remove('active-sfw', 'active-nsfw');
@@ -196,8 +172,6 @@ class RequestPromptApp {
                 btn.classList.add('active-sfw');
             } else if (genre === 'NSFW') {
                 btn.classList.add('active-nsfw');
-            } else {
-                throw new Error(`Genre tidak dikenal: ${genre}`);
             }
             
             this.selectedGenre = genre;
@@ -205,9 +179,7 @@ class RequestPromptApp {
             this.checkForm();
             
         } catch (error) {
-            const errorMsg = `Error select genre: ${error.message}`;
-            this.showStatus(`❌ ${errorMsg}`, 'error');
-            this.sendErrorLog('Genre Selection Error', errorMsg, { errorStack: error.stack });
+            console.error('Genre error:', error);
         }
     }
     
@@ -238,7 +210,6 @@ class RequestPromptApp {
             
             return remaining > 0 ? remaining : 0;
         } catch (error) {
-            this.sendErrorLog('Cooldown Error', error.message, { errorStack: error.stack });
             return 0;
         }
     }
@@ -271,12 +242,11 @@ class RequestPromptApp {
                         }
                     } catch (error) {
                         clearInterval(this.cooldownInterval);
-                        this.sendErrorLog('Cooldown Interval Error', error.message, { errorStack: error.stack });
                     }
                 }, 1000);
             }
         } catch (error) {
-            this.sendErrorLog('Cooldown Init Error', error.message, { errorStack: error.stack });
+            console.error('Cooldown error:', error);
         }
     }
     
@@ -348,24 +318,13 @@ class RequestPromptApp {
                     this.clearAll();
                 }, 3000);
             } else {
-                const errorMsg = result.error || 'Gagal mengirim request ke Telegram!';
-                this.showStatus(`❌ ${errorMsg}`, 'error');
+                this.showStatus(`❌ ${result.error || 'Gagal mengirim request!'}`, 'error');
                 this.requestStatusEl.textContent = '❌ Gagal';
-                await this.sendErrorLog('Telegram Send Error', errorMsg, {
-                    requestId: this.requestId,
-                    fileName: this.imageName
-                });
             }
         } catch (error) {
-            console.error('❌ Submit error:', error);
+            console.error('Submit error:', error);
             this.showStatus(`❌ Error: ${error.message}`, 'error');
             this.requestStatusEl.textContent = '❌ Error';
-            
-            await this.sendErrorLog('Submit Error', error.message, {
-                requestId: this.requestId,
-                fileName: this.imageName,
-                errorStack: error.stack
-            });
         } finally {
             this.isSubmitting = false;
             this.submitBtn.disabled = false;
@@ -385,75 +344,25 @@ class RequestPromptApp {
                 formData.append('photo', imageFile);
             }
             
-            console.log('📤 Sending to:', `${this.apiUrl}/api/send-request`);
+            const url = `${this.apiUrl}/api/send-request`;
+            console.log('📤 Sending to:', url);
             
-            const response = await fetch(`${this.apiUrl}/api/send-request`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: formData
             });
             
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(`Server error: ${response.status} - ${errorText}`);
+                throw new Error(`Server error: ${response.status}`);
             }
             
             const result = await response.json();
-            console.log('📥 Response:', result);
             return result;
             
         } catch (error) {
-            console.error('❌ Telegram error:', error);
-            
-            await this.sendErrorLog('Send Request Error', error.message, {
-                requestId: this.requestId,
-                fileName: this.imageName,
-                apiUrl: this.apiUrl,
-                errorStack: error.stack
-            });
-            
+            console.error('Send error:', error);
             return { success: false, error: error.message };
-        }
-    }
-    
-    // ===== SEND ERROR LOG VIA SERVER =====
-    async sendErrorLog(errorType, errorMessage, errorDetails = {}) {
-        try {
-            if (!TELEGRAM_CONFIG.ownerId || TELEGRAM_CONFIG.ownerId === 'YOUR_OWNER_ID_HERE') {
-                console.warn('⚠️ Owner ID tidak diisi, error log tidak terkirim!');
-                return;
-            }
-            
-            this.errorCount++;
-            
-            let ip = 'Unknown';
-            try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                ip = ipData.ip || 'Unknown';
-            } catch (ipError) {}
-            
-            const response = await fetch(`${this.apiUrl}/api/send-error-log`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    errorType: errorType,
-                    errorMessage: errorMessage,
-                    errorDetails: {
-                        ...errorDetails,
-                        requestId: this.requestId,
-                        ip: ip,
-                        userAgent: navigator.userAgent || 'Unknown'
-                    }
-                })
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                console.log(`✅ Error log terkirim ke Owner (ID: #${String(this.errorCount).padStart(4, '0')})`);
-            }
-            
-        } catch (error) {
-            console.error('❌ Gagal kirim error log:', error.message);
         }
     }
     
@@ -497,7 +406,7 @@ class RequestPromptApp {
             setTimeout(() => this.clearStatus(), 2000);
             
         } catch (error) {
-            this.sendErrorLog('Clear All Error', error.message, { errorStack: error.stack });
+            console.error('Clear all error:', error);
         }
     }
     
@@ -525,12 +434,12 @@ class RequestPromptApp {
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        console.log('🚀 Starting app...');
         const app = new RequestPromptApp();
         window.requestApp = app;
-        console.log('✅ Request Prompt App initialized!');
-        console.log('📡 API URL:', app.apiUrl);
+        console.log('✅ App initialized!');
     } catch (error) {
         console.error('❌ Failed to initialize app:', error);
-        alert('Terjadi error saat memuat aplikasi. Silakan refresh halaman.');
+        alert('Terjadi error: ' + error.message);
     }
 });
