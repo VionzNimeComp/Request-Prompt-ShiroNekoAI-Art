@@ -36,6 +36,9 @@ class RequestPromptApp {
         this.requestIdEl = document.getElementById('requestId');
         this.imageStatusEl = document.getElementById('imageStatus');
         this.requestStatusEl = document.getElementById('requestStatus');
+        this.galleryBtn = document.getElementById('galleryBtn');
+        this.cameraBtn = document.getElementById('cameraBtn');
+        this.cameraInput = document.getElementById('cameraInput');
         
         this.genreBtns = document.querySelectorAll('.genre-btn');
         
@@ -70,10 +73,28 @@ class RequestPromptApp {
         });
         
         this.submitBtn.addEventListener('click', this.handleSubmit.bind(this));
-        this.clearAllBtn.addEventListener('click', this.clearAll.bind(this));
+        this.clearAllBtn.addEventListener('click', this.clearAll.bind(this))
         
         this.requestIdEl.textContent = this.requestId;
         this.checkCooldownOnLoad();
+
+        this.galleryBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+        this.fileInput.click();
+        });
+
+        this.cameraBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+        this.cameraInput.click();
+        });
+
+        this.cameraInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+        this.processFile(files[0]);
+        }
+        this.cameraInput.value = '';
+        });
     }
     
     // ===== FILE HANDLING =====
