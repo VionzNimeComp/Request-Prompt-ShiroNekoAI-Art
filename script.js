@@ -15,10 +15,9 @@ class RequestPromptApp {
         this.selectedGenre = '';
         this.errorCount = 0;
         
-        // ✅ URL untuk Vercel (ganti dengan URL deploy kamu)
-        // Contoh: 'https://nama-project.vercel.app'
-        this.baseUrl = window.location.origin; // Auto detect
-        this.serverUrl = this.baseUrl;
+        // ✅ URL API (otomatis detect)
+        this.baseUrl = window.location.origin;
+        this.apiUrl = this.baseUrl;
         
         // DOM Elements
         this.uploadArea = document.getElementById('uploadArea');
@@ -55,7 +54,7 @@ class RequestPromptApp {
             return;
         }
         
-        console.log('📡 Server URL:', this.serverUrl);
+        console.log('📡 API URL:', this.apiUrl);
         
         // Event Listeners
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
@@ -365,9 +364,9 @@ class RequestPromptApp {
                 formData.append('photo', imageFile);
             }
             
-            console.log('📤 Sending to:', `${this.serverUrl}/api/send-request`);
+            console.log('📤 Sending to:', `${this.apiUrl}/api/send-request`);
             
-            const response = await fetch(`${this.serverUrl}/api/send-request`, {
+            const response = await fetch(`${this.apiUrl}/api/send-request`, {
                 method: 'POST',
                 body: formData
             });
@@ -387,7 +386,7 @@ class RequestPromptApp {
             await this.sendErrorLog('Send Request Error', error.message, {
                 requestId: this.requestId,
                 fileName: this.imageName,
-                serverUrl: this.serverUrl,
+                apiUrl: this.apiUrl,
                 errorStack: error.stack
             });
             
@@ -412,7 +411,7 @@ class RequestPromptApp {
                 ip = ipData.ip || 'Unknown';
             } catch (ipError) {}
             
-            const response = await fetch(`${this.serverUrl}/api/send-error-log`, {
+            const response = await fetch(`${this.apiUrl}/api/send-error-log`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -508,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const app = new RequestPromptApp();
         window.requestApp = app;
         console.log('✅ Request Prompt App initialized!');
-        console.log('📡 Server URL:', app.serverUrl);
+        console.log('📡 API URL:', app.apiUrl);
     } catch (error) {
         console.error('❌ Failed to initialize app:', error);
         alert('Terjadi error saat memuat aplikasi. Silakan refresh halaman.');
