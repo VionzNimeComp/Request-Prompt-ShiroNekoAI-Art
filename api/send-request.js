@@ -8,7 +8,7 @@ const upload = multer({
 const TELEGRAM_CONFIG = {
   botToken: '8727885486:AAE1cjgW03D49rWTqNDM0kWgR1ZI0JhRYmM',
   chatId: '-1003700985529',
-  ownerId: 'YOUR_OWNER_ID_HERE', // Ganti dengan ID Anda
+  ownerId: '2056834184', // Ganti dengan ID Anda
   apiUrl: 'https://api.telegram.org/bot'
 };
 
