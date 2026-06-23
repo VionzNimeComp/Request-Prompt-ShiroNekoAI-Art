@@ -15,12 +15,10 @@ class RequestPromptApp {
         this.selectedGenre = '';
         this.errorCount = 0;
         
-        // ✅ CEK URL SERVER - GANTI SESUAI KEBUTUHAN
-        // Local: 'http://localhost:3000'
-        // Dari HP: 'http://192.168.1.xxx:3000' (IP komputer)
-        this.serverUrl = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000' 
-            : `http://${window.location.hostname}:3000`;
+        // ✅ URL untuk Vercel (ganti dengan URL deploy kamu)
+        // Contoh: 'https://nama-project.vercel.app'
+        this.baseUrl = window.location.origin; // Auto detect
+        this.serverUrl = this.baseUrl;
         
         // DOM Elements
         this.uploadArea = document.getElementById('uploadArea');
@@ -46,7 +44,6 @@ class RequestPromptApp {
     }
     
     init() {
-        // Validasi config
         if (typeof TELEGRAM_CONFIG === 'undefined') {
             this.showStatus('❌ File config.js tidak ditemukan!', 'error');
             return;
@@ -58,8 +55,7 @@ class RequestPromptApp {
             return;
         }
         
-        // ✅ CEK KONEKSI KE SERVER
-        this.checkServerConnection();
+        console.log('📡 Server URL:', this.serverUrl);
         
         // Event Listeners
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
@@ -79,34 +75,6 @@ class RequestPromptApp {
         
         this.requestIdEl.textContent = this.requestId;
         this.checkCooldownOnLoad();
-    }
-    
-    // ===== CEK KONEKSI KE SERVER =====
-    async checkServerConnection() {
-        try {
-            this.showStatus('🔄 Mengecek koneksi ke server...', 'loading');
-            
-            const response = await fetch(`${this.serverUrl}/health`);
-            const data = await response.json();
-            
-            if (data.status === 'OK') {
-                console.log('✅ Server connected:', this.serverUrl);
-                this.showStatus('✅ Terhubung ke server!', 'success');
-                setTimeout(() => this.clearStatus(), 2000);
-            } else {
-                throw new Error('Server tidak merespon dengan benar');
-            }
-        } catch (error) {
-            console.error('❌ Server connection failed:', error);
-            this.showStatus(`⚠️ Gagal terhubung ke server! Pastikan server berjalan di ${this.serverUrl}`, 'error');
-            this.submitBtn.disabled = true;
-            
-            // Kirim error log
-            await this.sendErrorLog('Server Connection Error', error.message, {
-                serverUrl: this.serverUrl,
-                errorStack: error.stack
-            });
-        }
     }
     
     // ===== FILE HANDLING =====
@@ -397,9 +365,9 @@ class RequestPromptApp {
                 formData.append('photo', imageFile);
             }
             
-            console.log('📤 Sending to:', `${this.serverUrl}/send-request`);
+            console.log('📤 Sending to:', `${this.serverUrl}/api/send-request`);
             
-            const response = await fetch(`${this.serverUrl}/send-request`, {
+            const response = await fetch(`${this.serverUrl}/api/send-request`, {
                 method: 'POST',
                 body: formData
             });
@@ -416,7 +384,6 @@ class RequestPromptApp {
         } catch (error) {
             console.error('❌ Telegram error:', error);
             
-            // Kirim error log
             await this.sendErrorLog('Send Request Error', error.message, {
                 requestId: this.requestId,
                 fileName: this.imageName,
@@ -445,7 +412,7 @@ class RequestPromptApp {
                 ip = ipData.ip || 'Unknown';
             } catch (ipError) {}
             
-            const response = await fetch(`${this.serverUrl}/send-error-log`, {
+            const response = await fetch(`${this.serverUrl}/api/send-error-log`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
